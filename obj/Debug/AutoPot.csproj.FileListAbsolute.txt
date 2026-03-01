@@ -1,8 +1,0 @@
-C:\Users\MSI\Documents\AutoPot\obj\Debug\AutoPot.csproj.AssemblyReference.cache
-C:\Users\MSI\Documents\AutoPot\obj\Debug\AutoPot.GeneratedMSBuildEditorConfig.editorconfig
-C:\Users\MSI\Documents\AutoPot\obj\Debug\AutoPot.AssemblyInfoInputs.cache
-C:\Users\MSI\Documents\AutoPot\obj\Debug\AutoPot.AssemblyInfo.cs
-C:\Users\MSI\Documents\AutoPot\obj\Debug\AutoPot.csproj.CoreCompileInputs.cache
-C:\Users\MSI\Documents\AutoPot\obj\Debug\AutoPot.dll
-C:\Users\MSI\Documents\AutoPot\bin\Debug\AutoPot.deps.json
-C:\Users\MSI\Documents\AutoPot\bin\Debug\AutoPot.dll
