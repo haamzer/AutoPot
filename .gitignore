@@ -4,3 +4,8 @@
 
 /obj/Debug
 /obj/Release
+bin/
+obj/
+.vs/
+*.user
+*.suo
