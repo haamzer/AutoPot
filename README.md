@@ -28,7 +28,7 @@ Savage and Normal raids are detected automatically from game data — no hardcod
 
 1. Open Dalamud settings with `/xlsettings`
 2. Go to the **Experimental** tab
-3. Add the custom plugin repo URL
+3. Add the custom plugin repo URL : https://haamzer.github.io/mydalamud-plugins/repo.json
 4. Save, then open `/xlplugins` and search for **AutoPot**
 
 ## Usage
