@@ -1,0 +1,12 @@
+{
+    "Name": "AutoPot",
+    "Author": "Hamzer",
+    "Punchline": "Automatically selects the optimal potion for synced duties.",
+    "Description": "AutoPot detects which Ultimate/duty you're in and recommends the cheapest potion that caps your stats. Supports UCoB, UWU, TEA, DSR, TOP, and FRU.",
+    "Tags": ["potion", "ultimate", "raid", "autopot"],
+    "InternalName": "AutoPot",
+    "AssemblyVersion": "0.0.0.1",
+    "RepoUrl": "",
+    "ApplicableVersion": "any",
+    "DalamudApiLevel": 14
+}
