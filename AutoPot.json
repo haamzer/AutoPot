@@ -5,7 +5,7 @@
     "Description": "AutoPot detects which Ultimate/duty you're in and recommends the cheapest potion that caps your stats. Supports UCoB, UWU, TEA, DSR, TOP, and FRU.",
     "Tags": ["potion", "ultimate", "raid", "autopot"],
     "InternalName": "AutoPot",
-    "AssemblyVersion": "0.0.0.1",
+    "AssemblyVersion": "1.0.1.0",
     "RepoUrl": "",
     "ApplicableVersion": "any",
     "DalamudApiLevel": 14
