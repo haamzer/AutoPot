@@ -23,8 +23,8 @@ public static class JobData
         { 22, MainStat.STR },
         { 34, MainStat.STR },
         { 39, MainStat.STR },
-        { 41, MainStat.STR },
-
+        
+        { 41, MainStat.DEX },
         { 30, MainStat.DEX },
 
         { 23, MainStat.DEX },
