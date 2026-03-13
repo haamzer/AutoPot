@@ -20,30 +20,30 @@ public static class PotionData
 {
     public static readonly Dictionary<(PotionTier Tier, MainStat Stat), uint> PotionItemIds = new()
     {
-        { (PotionTier.Grade3Tincture, MainStat.STR), 19886 },
-        { (PotionTier.Grade3Tincture, MainStat.DEX), 19887 },
-        { (PotionTier.Grade3Tincture, MainStat.INT), 19889 },
-        { (PotionTier.Grade3Tincture, MainStat.MND), 19890 },
+        { (PotionTier.Grade3Tincture, MainStat.STR), 29492 },
+        { (PotionTier.Grade3Tincture, MainStat.DEX), 29493 },
+        { (PotionTier.Grade3Tincture, MainStat.INT), 29495 },
+        { (PotionTier.Grade3Tincture, MainStat.MND), 29496 },
 
-        { (PotionTier.Grade4Tincture, MainStat.STR), 22447 },
-        { (PotionTier.Grade4Tincture, MainStat.DEX), 22448 },
-        { (PotionTier.Grade4Tincture, MainStat.INT), 22450 },
-        { (PotionTier.Grade4Tincture, MainStat.MND), 22451 },
+        { (PotionTier.Grade4Tincture, MainStat.STR), 31893 },
+        { (PotionTier.Grade4Tincture, MainStat.DEX), 31894 },
+        { (PotionTier.Grade4Tincture, MainStat.INT), 31896 },
+        { (PotionTier.Grade4Tincture, MainStat.MND), 31897 },
 
-        { (PotionTier.Grade5Tincture, MainStat.STR), 27960 },
-        { (PotionTier.Grade5Tincture, MainStat.DEX), 27961 },
-        { (PotionTier.Grade5Tincture, MainStat.INT), 27963 },
-        { (PotionTier.Grade5Tincture, MainStat.MND), 27964 },
+        { (PotionTier.Grade5Tincture, MainStat.STR), 36104 },
+        { (PotionTier.Grade5Tincture, MainStat.DEX), 36105 },
+        { (PotionTier.Grade5Tincture, MainStat.INT), 36107 },
+        { (PotionTier.Grade5Tincture, MainStat.MND), 36108 },
 
         { (PotionTier.Grade6Tincture, MainStat.STR), 36109 },
         { (PotionTier.Grade6Tincture, MainStat.DEX), 36110 },
         { (PotionTier.Grade6Tincture, MainStat.INT), 36112 },
         { (PotionTier.Grade6Tincture, MainStat.MND), 36113 },
 
-        { (PotionTier.Grade7Tincture, MainStat.STR), 37838 },
-        { (PotionTier.Grade7Tincture, MainStat.DEX), 37839 },
-        { (PotionTier.Grade7Tincture, MainStat.INT), 37841 },
-        { (PotionTier.Grade7Tincture, MainStat.MND), 37842 },
+        { (PotionTier.Grade7Tincture, MainStat.STR), 37840 },
+        { (PotionTier.Grade7Tincture, MainStat.DEX), 37841 },
+        { (PotionTier.Grade7Tincture, MainStat.INT), 37843 },
+        { (PotionTier.Grade7Tincture, MainStat.MND), 37844 },
 
         { (PotionTier.Grade8Tincture, MainStat.STR), 39727 },
         { (PotionTier.Grade8Tincture, MainStat.DEX), 39728 },
@@ -55,10 +55,10 @@ public static class PotionData
         { (PotionTier.Grade1Gemdraught, MainStat.INT), 44160 },
         { (PotionTier.Grade1Gemdraught, MainStat.MND), 44161 },
 
-        { (PotionTier.Grade2Gemdraught, MainStat.STR), 44163 },
-        { (PotionTier.Grade2Gemdraught, MainStat.DEX), 44164 },
-        { (PotionTier.Grade2Gemdraught, MainStat.INT), 44166 },
-        { (PotionTier.Grade2Gemdraught, MainStat.MND), 44167 },
+        { (PotionTier.Grade2Gemdraught, MainStat.STR), 44162 },
+        { (PotionTier.Grade2Gemdraught, MainStat.DEX), 44163 },
+        { (PotionTier.Grade2Gemdraught, MainStat.INT), 44165 },
+        { (PotionTier.Grade2Gemdraught, MainStat.MND), 44166 },
 
         { (PotionTier.Grade3Gemdraught, MainStat.STR), 45995 },
         { (PotionTier.Grade3Gemdraught, MainStat.DEX), 45996 },

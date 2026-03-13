@@ -14,9 +14,9 @@ namespace AutoPot;
 public enum DetectedDutyType
 {
     None,
-    Ultimate,   // Use cheapest that caps
-    Savage,     // Use highest available
-    NormalRaid, // Use highest available
+    Ultimate,
+    Savage,
+    NormalRaid,
 }
 
 public class AutoPotManager : IDisposable
@@ -29,7 +29,6 @@ public class AutoPotManager : IDisposable
     private readonly IPluginLog log;
     private readonly Configuration configuration;
 
-    // Current state
     public uint CurrentTerritoryId { get; private set; }
     public DutyInfo? CurrentUltimate { get; private set; }
     public DetectedDutyType CurrentDutyType { get; private set; } = DetectedDutyType.None;
@@ -79,7 +78,6 @@ public class AutoPotManager : IDisposable
         SwapMessage = "";
         HasSwapped = false;
 
-        // Check if it's a hardcoded Ultimate first
         if (DutyData.Ultimates.TryGetValue(territoryId, out var ultimateInfo))
         {
             CurrentUltimate = ultimateInfo;
@@ -89,7 +87,6 @@ public class AutoPotManager : IDisposable
         }
         else
         {
-            // Try to detect savage or normal raid via game data
             var detectedType = DetectDutyType(territoryId, out var dutyName);
             if (detectedType == DetectedDutyType.None)
             {
@@ -103,7 +100,6 @@ public class AutoPotManager : IDisposable
             log.Information($"Entered {detectedType}: {dutyName} (Territory {territoryId})");
         }
 
-        // Determine player's main stat
         if (!playerState.IsLoaded || !playerState.ClassJob.IsValid)
         {
             StatusMessage = "Player data not loaded yet.";
@@ -114,27 +110,23 @@ public class AutoPotManager : IDisposable
         if (!JobData.JobMainStat.TryGetValue(jobId, out var mainStat))
         {
             StatusMessage = $"Unknown job ID: {jobId}";
-            log.Warning($"No main stat mapping for job ID {jobId}");
             return;
         }
 
         CurrentMainStat = mainStat;
         log.Information($"Job ID {jobId} -> {mainStat}");
 
-        // Find best potion based on duty type
         if (CurrentDutyType == DetectedDutyType.Ultimate && CurrentUltimate != null)
             FindBestPotionForUltimate(CurrentUltimate, mainStat);
         else
             FindHighestPotion(mainStat);
 
         if (configuration.AutoSwapOnDutyEnter && RecommendedItemId.HasValue)
-            SwapHotbarPotion();
+        {
+            framework.RunOnTick(() => { SwapHotbarPotion(); }, delayTicks: 30);
+        }
     }
 
-    /// <summary>
-    /// Detect if the current territory is a savage or normal raid using Lumina sheets.
-    /// ContentType 5 = Raids. Savage raids have "(Savage)" in their name.
-    /// </summary>
     private DetectedDutyType DetectDutyType(uint territoryId, out string dutyName)
     {
         dutyName = "";
@@ -157,7 +149,6 @@ public class AutoPotManager : IDisposable
             var name = cfc.Name.ToString();
             dutyName = name;
 
-            // ContentType 5 = Raids (8-man)
             if (contentTypeId == 5)
             {
                 if (name.Contains("(Savage)"))
@@ -174,9 +165,6 @@ public class AutoPotManager : IDisposable
         return DetectedDutyType.None;
     }
 
-    /// <summary>
-    /// For Ultimates: use cheapest that caps, fall back to lower tiers.
-    /// </summary>
     private unsafe void FindBestPotionForUltimate(DutyInfo duty, MainStat stat)
     {
         var inventoryManager = InventoryManager.Instance();
@@ -188,7 +176,6 @@ public class AutoPotManager : IDisposable
 
         var statName = PotionData.GetStatName(stat);
 
-        // Search from optimal tier upward (cheapest first)
         var tiersUp = Enum.GetValues<PotionTier>()
             .Where(t => (int)t >= (int)duty.OptimalTier)
             .OrderBy(t => (int)t)
@@ -214,7 +201,6 @@ public class AutoPotManager : IDisposable
             }
         }
 
-        // Fall back below optimal (won't cap)
         var tiersDown = Enum.GetValues<PotionTier>()
             .Where(t => (int)t < (int)duty.OptimalTier)
             .OrderByDescending(t => (int)t)
@@ -231,18 +217,13 @@ public class AutoPotManager : IDisposable
                 RecommendedItemId = itemId;
                 var tierName = PotionData.GetTierName(tier);
                 StatusMessage = $"{duty.Name}: Using {tierName} of {statName} (below optimal - won't cap!)";
-                log.Warning($"Using sub-optimal potion: {tierName} of {statName}");
                 return;
             }
         }
 
         StatusMessage = $"{duty.Name}: No {statName} potions found in inventory!";
-        log.Warning($"No potions found for {stat} in inventory.");
     }
 
-    /// <summary>
-    /// For Savage/Normal: use the highest available potion.
-    /// </summary>
     private unsafe void FindHighestPotion(MainStat stat)
     {
         var inventoryManager = InventoryManager.Instance();
@@ -276,7 +257,6 @@ public class AutoPotManager : IDisposable
         }
 
         StatusMessage = $"{typeLabel}: No {statName} potions found in inventory!";
-        log.Warning($"No potions found for {stat} in inventory.");
     }
 
     private static unsafe bool HasItemInInventory(InventoryManager* inventoryManager, uint itemId)
@@ -325,7 +305,6 @@ public class AutoPotManager : IDisposable
                 if (hotbarModule == null)
                 {
                     SwapMessage = "Could not access hotbar module.";
-                    log.Error("RaptureHotbarModule instance is null.");
                     return;
                 }
 
@@ -338,7 +317,6 @@ public class AutoPotManager : IDisposable
 
                 var hqItemId = targetItemId + 1000000;
 
-                // Scan all hotbars (0-9 normal, 10-17 cross)
                 for (uint hotbarId = 0; hotbarId < 18; hotbarId++)
                 {
                     ref var hotbar = ref hotbarModule->Hotbars[(int)hotbarId];
@@ -349,32 +327,32 @@ public class AutoPotManager : IDisposable
 
                         if (slot.CommandType == HotbarSlotType.Item && IsPotionItemId(slot.CommandId))
                         {
-                            log.Information($"DEBUG BEFORE: hotbarId={hotbarId}, slotId={slotId}, " +
-                                $"CommandType={slot.CommandType} ({(int)slot.CommandType}), " +
-                                $"CommandId={slot.CommandId}");
-                            log.Information($"DEBUG TARGET: HotbarSlotType.Item={(int)HotbarSlotType.Item}, " +
-                                $"targetItemId={targetItemId}, hqItemId={hqItemId}");
+                            log.Information($"Found potion at hotbar={hotbarId} slot={slotId} CommandId={slot.CommandId}");
+                            log.Information($"Target: base={targetItemId} hq={hqItemId}");
 
-                            // Try SetAndSaveSlot
-                            hotbarModule->SetAndSaveSlot(hotbarId, slotId, HotbarSlotType.Item, hqItemId);
+                            slot.Set(HotbarSlotType.Item, hqItemId);
+                            ref var afterSet = ref hotbarModule->Hotbars[(int)hotbarId].Slots[(int)slotId];
+                            log.Information($"After Set(HQ): CommandId={afterSet.CommandId}");
 
-                            // Re-read slot to check if it changed
-                            ref var slotAfter = ref hotbarModule->Hotbars[(int)hotbarId].Slots[(int)slotId];
-                            log.Information($"DEBUG AFTER SetAndSaveSlot: " +
-                                $"CommandType={slotAfter.CommandType} ({(int)slotAfter.CommandType}), " +
-                                $"CommandId={slotAfter.CommandId}");
-
-                            // If SetAndSaveSlot didn't change it, try Set() directly
-                            if (slotAfter.CommandId != hqItemId)
+                            if (afterSet.CommandId != hqItemId && afterSet.CommandId != targetItemId)
                             {
-                                log.Warning("SetAndSaveSlot did NOT change the slot! Trying Set() directly...");
-                                slotAfter.Set(HotbarSlotType.Item, hqItemId);
-
-                                ref var slotAfter2 = ref hotbarModule->Hotbars[(int)hotbarId].Slots[(int)slotId];
-                                log.Information($"DEBUG AFTER Set(): " +
-                                    $"CommandType={slotAfter2.CommandType} ({(int)slotAfter2.CommandType}), " +
-                                    $"CommandId={slotAfter2.CommandId}");
+                                afterSet.Set(HotbarSlotType.Item, targetItemId);
+                                log.Information($"After Set(base): CommandId={afterSet.CommandId}");
                             }
+
+                            hotbarModule->SetAndSaveSlot(hotbarId, slotId, HotbarSlotType.Item, hqItemId);
+                            ref var afterSave = ref hotbarModule->Hotbars[(int)hotbarId].Slots[(int)slotId];
+                            log.Information($"After SetAndSave(HQ): CommandId={afterSave.CommandId}");
+
+                            if (afterSave.CommandId != hqItemId && afterSave.CommandId != targetItemId)
+                            {
+                                hotbarModule->SetAndSaveSlot(hotbarId, slotId, HotbarSlotType.Item, targetItemId);
+                                ref var afterSave2 = ref hotbarModule->Hotbars[(int)hotbarId].Slots[(int)slotId];
+                                log.Information($"After SetAndSave(base): CommandId={afterSave2.CommandId}");
+                            }
+
+                            ref var finalSlot = ref hotbarModule->Hotbars[(int)hotbarId].Slots[(int)slotId];
+                            log.Information($"Final: CommandType={finalSlot.CommandType} CommandId={finalSlot.CommandId}");
 
                             var label = hotbarId < 10
                                 ? $"hotbar {hotbarId + 1} slot {slotId + 1}"
@@ -382,9 +360,7 @@ public class AutoPotManager : IDisposable
 
                             SwapMessage = $"Swapped {label}!";
                             HasSwapped = true;
-                            log.Information($"Swapped {label} -> item {targetItemId} (HQ: {hqItemId})");
 
-                            // Print to game chat
                             var tierName = RecommendedTier.HasValue ? PotionData.GetTierName(RecommendedTier.Value) : "Unknown";
                             var statName = CurrentMainStat.HasValue ? PotionData.GetStatName(CurrentMainStat.Value) : "Unknown";
                             chatGui.Print($"[AutoPot] Swapped to {tierName} of {statName} on {label}.");
@@ -393,8 +369,8 @@ public class AutoPotManager : IDisposable
                     }
                 }
 
-                SwapMessage = "No potion found on any hotbar to replace.";
                 log.Warning("No existing potion slot found on any hotbar.");
+                SwapMessage = "No potion found on any hotbar to replace.";
             }
         });
     }
